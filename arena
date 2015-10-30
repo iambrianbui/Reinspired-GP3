@@ -1,0 +1,185 @@
+//  This program allows the user to load a monster.
+#include <iostream>
+#include <string>
+#include <fstream>        // Needed to use 
+#include<ctime>
+#include<cstdlib>
+using namespace std;
+
+int main()
+{
+	//  Initialize
+	ifstream inputFile;
+	ofstream fout;
+	string monster;
+	int number;
+
+	//  The fun stuff :^)  // skillz
+	int monsterHP = 100,  // Health
+		playerHP = 100,
+		newMonsterHP,
+		newPlayerHP;	
+	int hit,  //  hit rate
+		sdam,  //  sword damage
+		fdam,  //  fireball damage
+		mdam, //  monster damage
+		skills;
+
+
+	// Get the filename from the user
+	cout << "Welcome to the arena, who would you like to fight?" << endl;
+	getline(cin, monster);
+
+	// Open the input file
+	inputFile.open(monster.c_str());
+
+	// If the file successfully opened, process it
+	if (inputFile)
+	{
+		// Read the numbers from the file and display them
+				while (inputFile >>	 number)
+			cout << "You are now fighting " << monster << "!" << endl;
+			Fight:
+				//  Establish RNG
+				srand(time(NULL));
+				hit = rand() % 20 + 1;  //  Accuracy
+				sdam = rand() % 20 + 11;   //  slash damage 10-30, 90% chance to hit
+				fdam = rand() % 30 + 11;  //  fireball damage 20-40, 75% chance to hit
+				mdam = rand() % 20 + 1;  //  1-20, + base
+
+				cout << "Would you like to use your sword, or fireball?" << endl;
+				cout << "1 = Sword Slash" << endl
+					<< "2 = Fireball" << endl;
+				cin >> skills;
+				switch (skills)
+				{
+					//  If the user picks slash
+				case 1:
+				{
+					cout << "You ready your sword..." << endl << endl;
+					system("pause");
+					if (hit <= 18)
+					{
+						newMonsterHP = monsterHP - sdam;
+						monsterHP = newMonsterHP;
+						cout << "You hit " << monster << " for " << sdam << " damage with your sword!" << endl;
+						cout << monster << " has " << newMonsterHP << " HP remaining." << endl << endl;
+
+						//  Monster's turn
+						if (hit <= 16)
+						{
+							newPlayerHP = playerHP - (mdam + number);
+							playerHP = newPlayerHP;
+							cout << monster << " has hit you for " << (mdam + number) << " damage!" << endl;
+							cout << "You have " << newPlayerHP << " HP remaining." << endl << endl;
+
+							goto Check;
+						}
+						else
+							cout << monster << " missed!" << endl << endl;
+						goto Check;
+						
+					}
+					else
+						cout << "You missed!" << endl;
+					if (hit <= 16)
+					{
+						newPlayerHP = playerHP - (mdam + number);
+						playerHP = newPlayerHP;
+						cout << monster << " has hit you for " << (mdam + number) << " damage!" << endl;
+						cout << "You have" << newPlayerHP << " HP remaining." << endl << endl;
+
+						goto Check;
+					}
+					else
+						cout << monster << " missed!" << endl << endl;
+					goto Check;
+					break;
+				}
+					//  If the user picks fireball
+				case 2:
+				{
+					cout << "Your hands begin to glow orange..." << endl << endl;
+					system("pause");
+					if (hit <= 15)
+					{
+						newMonsterHP = monsterHP - fdam;
+						monsterHP = newMonsterHP;
+						cout << "You hit " << monster << " for " << fdam << " damage with your fireball!" << endl;
+						cout << monster << " has " << newMonsterHP << " HP remaining." << endl << endl;
+
+						//  Monster's turn
+						if (hit <= 16)
+						{
+							newPlayerHP = playerHP - (mdam + number);
+							playerHP = newPlayerHP;
+							cout << monster << " has hit you for " << (mdam + number) << " damage!" << endl;
+							cout << "You have " << newPlayerHP << " HP remaining." << endl << endl;
+
+							goto Check;
+						}
+						else
+							cout << monster << " missed!" << endl << endl;
+						goto Check;
+
+					}
+					else
+						cout << "You missed!" << endl;
+					if (hit <= 16)
+					{
+						newPlayerHP = playerHP - (mdam + number);
+						playerHP = newPlayerHP;
+						cout << monster << " has hit you for " << (mdam + number) << " damage!" << endl;
+						cout << "You have" << newPlayerHP << " HP remaining." << endl << endl;
+
+						goto Check;
+					}
+					else
+						cout << monster << " missed!" << endl << endl;
+					goto Check;
+					break;
+				}
+					//  Cmon man..
+				default: 
+					cout << "I don't know what that means...." << endl;
+					goto Fight;
+				}
+
+			Check:
+				{
+					if (monsterHP <= 0)
+					{
+						cout << monster <<" has been slain!" << endl;
+						system("pause");
+						inputFile.close();
+						inputFile.clear();
+						fout.open("admin", ios::app);
+						fout << number + 100 << " XP" << endl;
+						fout << monster << "    Victory" << endl;
+						cout << "You have gained" << number + 100 << "XP!" << endl;
+
+					}
+					else if (playerHP <= 0)
+					{
+						cout << "You have been slain..." << endl;
+						system("pause");
+						inputFile.close();
+						inputFile.clear();
+						fout.open("admin", ios::app);
+						fout << monster << "    Defeat" << endl;
+
+					}
+					else goto Fight;
+				}
+
+		// Close the file.
+		inputFile.close();
+	}
+	else
+	{
+		// Display an error message
+		cout << "We do not know of " << monster << " maybe if we catch one, you can fight one." << endl;
+	}
+	system("pause");
+	return 0;
+}
