@@ -1,0 +1,38 @@
+//  This program allows the admin to create monsters.
+#include <iostream>
+#include <fstream>        // Needed to use files
+#include <string>
+using namespace std;
+
+int main()
+{
+	ofstream outputMonster;
+	int goodAnswer = 0,
+		monsterDamage;
+	string monsterName;
+
+	cout << "Please name the monster." << endl;
+	getline(cin, monsterName);
+	outputMonster.open(monsterName.c_str());  //  Create a file for the new monster.
+	
+	cout << "How much base damage does the monster have?" << endl;
+	cin >> monsterDamage;
+	//  Begin loop.
+	while (goodAnswer <= 1)
+		{
+			if (cin.fail())
+			{
+				cout << "Must be a positive number." << endl;
+				cin.clear();
+				cin.ignore();
+			}
+			else
+				outputMonster << monsterDamage << endl;
+			cout << "Monster creation success!  " << endl <<
+				monsterName << " has a base damage of " << monsterDamage << endl;
+			break;
+		} 
+
+	system("pause");
+	return 0;
+}
