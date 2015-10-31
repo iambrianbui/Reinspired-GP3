@@ -1,0 +1,43 @@
+// This program lets the user enter a filename.
+#include <iostream>
+#include <string>
+#include <fstream>        // Needed to use files
+using namespace std;
+
+int main()
+{
+	ifstream inputFile;
+	string filename, playerText;
+	int number;
+
+	// Get the filename from the user
+	cout << "Enter the user you wish to see: ";
+	cin >> filename;
+
+	// Open the input file
+	filename += "_player.txt";
+	inputFile.open(filename.c_str());
+
+	// If the file successfully opened, process it
+	if (inputFile)
+	{
+		// Read the numbers from the file and display them
+		while (getline(inputFile, playerText))
+		{
+			while (!inputFile.eof())
+			{
+				getline(inputFile, playerText);
+				cout << playerText << endl;
+			}
+		}
+		inputFile.close();
+		system("pause");
+	}
+	else
+	{
+		// Display an error message
+		cout << "Player could not be found!" << endl;
+		system("pause");
+	}
+	return 0;
+}	
