@@ -15,6 +15,7 @@ int main()
 	getline(cin, monsterName);
 	outputMonster.open(monsterName.c_str());  //  Create a file for the new monster.
 	
+	//  create base damage for the monster
 	cout << "How much base damage does the monster have?" << endl;
 	cin >> monsterDamage;
 	//  Begin loop.
