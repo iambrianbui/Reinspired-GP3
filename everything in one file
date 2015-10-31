@@ -466,23 +466,50 @@ Menu:
 		}
 		case 6:
 		{
-				  ifstream file;
-				  string text;
+				  ifstream file; 
+				  string text, adminCheck, password, strInput;
 				  cin.ignore();
 
-				  //open the input file
-				  file.open("data.txt");
+				  cout << "Please enter your username, admin." << endl;
+				  cin >> adminCheck;
+				  adminCheck += "_admin.txt";
+				  ifstream inputFile2(adminCheck.c_str());
 
-				  //if file is not empty, read line by line
-				  while (getline(file, text))
+				  if (!inputFile2)
 				  {
-					  cout << text << endl;
+					  cout << "Admin account not recognized..." << endl;
+					  goto Menu;
 				  }
-				  file.close();
-				  system("pause");
-				  cout << string(50, '\n');
-				  goto Menu;
-				  break;
+				  else
+				  {
+					  // Prompt user for password
+					  cout << "Please enter your password:  ";
+					  cin >> password;
+					  // Read password
+					  getline(inputFile2, strInput);
+					  if (password == strInput)
+					  {
+						  inputFile2.close();
+						  inputFile2.clear();
+						  //open the input file
+						  file.open("data.txt");
+
+						  //if file is not empty, read line by line
+						  while (getline(file, text))
+						  {
+							  cout << text << endl;
+						  }
+						  file.close();
+						  system("pause");
+						  cout << string(50, '\n');
+						  goto Menu;
+						  break;
+					  }
+					  else
+						  cout << "Incorrect password!" << endl;
+					  inputFile2.close();
+					  goto Menu;
+				  }
 		}
 		//  PEACE OUT FAM ============================================================
 		case 7:
