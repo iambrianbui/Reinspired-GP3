@@ -1,0 +1,501 @@
+//  See the readme fam
+//  Anytime i'm using cin.ignore(); it's to reset the getline.
+
+#include <iostream>
+#include <string>
+#include <fstream>        // Needed to use 
+#include<ctime>
+#include<cstdlib>
+#include <stdio.h>
+using namespace std;
+
+int main()
+{
+	int menu;
+
+Menu:
+	cout << "Hello user!  What would you like to do?" << endl;
+	cout << "1...Register" << endl
+		<< "2...Login" << endl
+		<< "3...Create a Monster" << endl
+		<< "4...Enter the arena" << endl
+		<< "5...See player log" << endl
+		<< "6...See masterlog" << endl
+		<< "7...Exit the program" << endl;
+	cin >> menu;
+	{
+		switch (menu)
+		{
+			//  REGISTER FAM ============================================================
+		case 1:
+		{
+			
+				ofstream outputFile;
+				string username, password;
+				int admin;
+				cin.ignore();
+				// Register a username
+			Username:
+				{
+					cout << "Please enter your username." << endl;
+					cout << "Username: ";
+					cin >> username;
+					cout << endl;
+					if (username.length() < 6)
+					{
+						cout << "Username length must be at least 6 characters long." << endl;
+						goto Username;
+					}
+					else
+					AdminCheck:
+					cout << "Are you a player, or an administrator?" << endl;
+					cout << "1...I am a player." << endl;
+					cout << "2...I am an administrator" << endl;
+					cin >> admin;
+					switch (admin)
+					{
+					case 1:
+					{
+							  username += "_player.txt";
+							  break;
+					}
+					case 2:
+					{
+							  username += "_admin.txt";
+							  break;
+					}
+					default:
+						cout << "Response not recognized." << endl;
+						goto AdminCheck;
+					}
+
+
+					outputFile.open(username.c_str());  //  Create a file for the new user.
+				}
+			Password:
+				cout << "Password: ";
+				cin >> password;
+				if (password.length() < 6)
+				{
+					cout << "Password length must be at least 6 characters long." << endl;
+					goto Password;
+				}
+				else
+					// Write the names to the file
+					outputFile << password << endl;
+
+				// Close the file
+				outputFile.close();
+
+				cout << "Registration complete!" << endl;
+
+				system("pause");
+				cout << string(50, '\n');
+				  goto Menu;
+				  break;
+		}
+			// LOGIN FAM ============================================================
+		case 2:
+		{
+				  string username, password, info;
+				  int admin;
+
+				  // Get the filename from the user
+				  cin.ignore();
+			  Beginning:
+				  cout << "Please enter your username:  ";
+				  cin >> username;
+
+				  //  Ask if the user is an administrator.
+			 AdminCheckarino:
+				  cout << "Are you an admin?" << endl;
+				  cout << "1...No, I am not an admin." << endl;
+				  cout << "2...Yes, I am an admin." << endl;
+				  cin >> admin;
+				  switch (admin)
+				  {
+				  case 1:
+				  {
+							username += "_player.txt";
+							break;
+				  }
+				  case 2:
+				  {
+							username += "_admin.txt";
+							break;
+				  }
+				  default:
+					  cout << "Response not recognized." << endl;
+					  goto AdminCheckarino;
+				  }
+
+
+				  // Open the input file
+				  ifstream inputFile(username.c_str());
+
+				  // If the file successfully opened, process it
+				  if (inputFile)
+				  {
+					  // Prompt user for password
+					  cout << "Please enter your password:  ";
+					  cin >> password;
+					  // Read password
+					  string strInput;
+					  getline(inputFile, strInput);
+					  if (password == strInput)
+					  {
+						  cout << "Hello, " << username << "!" << endl;
+						  cout << "Welcome back!" << endl;
+					  }
+					  else
+						  cout << "Wrong password." << endl;
+
+					  // Close the file.
+					  inputFile.close();
+				  }
+				  else
+				  {
+					  // Display an error message
+					  cout << "Username not recognized." << endl;
+					  goto Beginning;
+				  }
+
+				  system("pause");
+				  cout << string(50, '\n');
+				  goto Menu;
+				  break;
+		}
+			//  CREATE A MONSTER FAM ============================================================
+		case 3:
+		{
+				  ofstream outputMonster;
+				  int goodAnswer = 0,
+					  monsterDamage;
+				  string monsterName;
+
+				  cout << "Please name the monster." << endl;
+				  cin.ignore();
+				  getline(cin, monsterName);
+				  outputMonster.open(monsterName.c_str());  //  Create a file for the new monster.
+
+				  //  create base damage for the monster
+				  cout << "How much base damage does the monster have?" << endl;
+				  cin >> monsterDamage;
+				  //  Begin loop.
+				  while (goodAnswer <= 1)
+				  {
+					  if (cin.fail())
+					  {
+						  cout << "Must be a positive number." << endl;
+						  cin.clear();
+						  cin.ignore();
+					  }
+					  else
+						  outputMonster << monsterDamage << endl;
+					  cout << "Monster creation success!  " << endl <<
+						  monsterName << " has a base damage of " << monsterDamage << endl;
+					  break;
+				  }
+
+				  system("pause");
+				  cout << string(50, '\n');
+				  goto Menu;
+				  break;
+		}
+			//  FIGHT ME FAM ============================================================
+		case 4:
+		{
+				  //  Initialize
+				  ifstream inputFile;
+				  ofstream fout,
+					  fout2;
+				  string monster,
+					  player;
+				  int number;
+
+				  //  The fun stuff :^)  // skillz
+				  int monsterHP = 100,  // Health
+					  playerHP = 100,
+					  newMonsterHP,
+					  newPlayerHP;
+				  int hit,  //  hit rate
+					  sdam,  //  sword damage
+					  fdam,  //  fireball damage
+					  mdam, //  monster damage
+					  skills;
+
+
+				  // Pseudologin to track stats
+			  PseudoLogin:
+				  cin.ignore();
+				  cout << "Insert username, player." << endl;
+				  getline(cin, player);
+				  player += "_player.txt";
+				  inputFile.open(player);
+				  if (!inputFile)
+				  {
+					  cout << "Player name not recognized!" << endl;
+					  goto PseudoLogin;
+				  }
+				  else
+					  inputFile.close();
+				  inputFile.clear();
+
+				  // Ask for monster
+				  cout << "Welcome to the arena, who would you like to fight?" << endl;
+				  getline(cin, monster);
+
+				  // Open the input file
+				  inputFile.open(monster.c_str());
+
+				  // If the file successfully opened, process it
+				  if (inputFile)
+				  {
+					  // Read the numbers from the file and display them
+					  while (inputFile >> number)
+						  cout << "You are now fighting " << monster << "!" << endl;
+				  Fight:
+					  //  Establish RNG
+					  srand(time(NULL));
+					  hit = rand() % 20 + 1;  //  Accuracy
+					  sdam = rand() % 20 + 11;   //  slash damage 10-30, 90% chance to hit
+					  fdam = rand() % 30 + 11;  //  fireball damage 20-40, 75% chance to hit
+					  mdam = rand() % 20 + 1;  //  1-20, + base
+
+					  cout << "Would you like to use your sword, or fireball?" << endl;
+					  cout << "1 = Sword Slash" << endl
+						  << "2 = Fireball" << endl;
+					  cin >> skills;
+					  switch (skills)
+					  {
+						  //  If the user picks slash
+					  case 1:
+					  {
+								cout << "You ready your sword..." << endl << endl;
+								system("pause");
+								if (hit <= 18)
+								{
+									newMonsterHP = monsterHP - sdam;
+									monsterHP = newMonsterHP;
+									cout << "You hit " << monster << " for " << sdam << " damage with your sword!" << endl;
+									cout << monster << " has " << newMonsterHP << " HP remaining." << endl << endl;
+
+									//  Monster's turn
+									if (hit <= 16)
+									{
+										newPlayerHP = playerHP - (mdam + number);
+										playerHP = newPlayerHP;
+										cout << monster << " has hit you for " << (mdam + number) << " damage!" << endl;
+										cout << "You have " << newPlayerHP << " HP remaining." << endl << endl;
+
+										goto Check;
+									}
+									else
+										cout << monster << " missed!" << endl << endl;
+									goto Check;
+
+								}
+								else
+									cout << "You missed!" << endl;
+								if (hit <= 16)
+								{
+									newPlayerHP = playerHP - (mdam + number);
+									playerHP = newPlayerHP;
+									cout << monster << " has hit you for " << (mdam + number) << " damage!" << endl;
+									cout << "You have" << newPlayerHP << " HP remaining." << endl << endl;
+
+									goto Check;
+								}
+								else
+									cout << monster << " missed!" << endl << endl;
+								goto Check;
+								break;
+					  }
+						  //  If the user picks fireball
+					  case 2:
+					  {
+								cout << "Your hands begin to glow orange..." << endl << endl;
+								system("pause");
+								if (hit <= 15)
+								{
+									newMonsterHP = monsterHP - fdam;
+									monsterHP = newMonsterHP;
+									cout << "You hit " << monster << " for " << fdam << " damage with your fireball!" << endl;
+									cout << monster << " has " << newMonsterHP << " HP remaining." << endl << endl;
+
+									//  Monster's turn
+									if (hit <= 16)
+									{
+										newPlayerHP = playerHP - (mdam + number);
+										playerHP = newPlayerHP;
+										cout << monster << " has hit you for " << (mdam + number) << " damage!" << endl;
+										cout << "You have " << newPlayerHP << " HP remaining." << endl << endl;
+
+										goto Check;
+									}
+									else
+										cout << monster << " missed!" << endl << endl;
+									goto Check;
+
+								}
+								else
+									cout << "You missed!" << endl;
+								if (hit <= 16)
+								{
+									newPlayerHP = playerHP - (mdam + number);
+									playerHP = newPlayerHP;
+									cout << monster << " has hit you for " << (mdam + number) << " damage!" << endl;
+									cout << "You have" << newPlayerHP << " HP remaining." << endl << endl;
+
+									goto Check;
+								}
+								else
+									cout << monster << " missed!" << endl << endl;
+								goto Check;
+								break;
+					  }
+						  //  Cmon man..
+					  default:
+						  cout << "I don't know what that means...." << endl;
+						  goto Fight;
+					  }
+
+				  Check:
+					  {
+						  time_t tim;   // get time now
+						  time(&tim);
+
+						  //  check if the player has killed the monster
+						  if (monsterHP <= 0)
+						  {
+							  cout << monster << " has been slain!" << endl;
+							  system("pause");
+							  inputFile.close();
+							  inputFile.clear();
+							  //  close the monster file
+							  fout.open("data.txt", ios::app);
+							  fout << player << "   " << number + 100 << " XP ";
+							  fout << monster << "    Victory  " << ctime(&tim);
+							  cout << "You have gained " << number + 100 << " XP!" << endl;
+							  //  insert the data into the masterlog
+							  inputFile.close();
+							  inputFile.clear();
+							  //  close the masterlog
+
+							  fout2.open(player, ios::app);
+							  fout2 << number + 100 << " XP ";
+							  fout2 << monster << "    Victory  " << ctime(&tim) << endl;
+							  //  insert the data into the playerlog
+
+						  }
+						  //  check if the monster has killed the player
+						  else if (playerHP <= 0)
+						  {
+							  cout << "You have been slain..." << endl;
+							  system("pause");
+							  inputFile.close();
+							  inputFile.clear();
+							  //  close the monster file
+							  fout.open("data.txt", ios::app);
+							  fout << player << "   " << monster << "    Defeat  " << ctime(&tim);
+							  inputFile.close();
+							  inputFile.clear();
+							  //  insert the data into the masterlog, close it
+							  fout2.open(player, ios::app);
+							  fout2 << monster << "    Defeat  " << ctime(&tim);
+							  //  insert the data into the player log
+
+						  }
+						  else goto Fight;
+					  }
+
+					  // Close the file.
+					  inputFile.close();
+				  }
+				  else
+				  {
+					  // Display an error message
+					  cout << "We do not know of " << monster << " maybe if we catch one, you can fight one." << endl;
+				  }
+				  system("pause");
+				  cout << string(50, '\n');
+				  goto Menu;
+				  break;
+		}
+		//  LOAD MY PLAYER LOG FAM ============================================================
+		case 5:
+		{
+			ifstream inputFile;
+			string filename2, playerText2;
+			int number;
+			cin.ignore();
+
+			// Get the filename from the user
+			cout << "Enter the user you wish to see: ";
+			cin >> filename2;
+
+			// Open the input file
+			filename2 += "_player.txt";
+			inputFile.open(filename2.c_str());
+
+			// If the file successfully opened, process it
+			if (inputFile)
+			{
+				// Read the numbers from the file and display them
+				while (getline(inputFile, playerText2))
+				{
+					while (!inputFile.eof())
+					{
+						getline(inputFile, playerText2);
+						cout << playerText2 << endl;
+					}
+				}
+				inputFile.close();
+				system("pause");
+			}
+			else
+			{
+				// Display an error message
+				cout << "Player could not be found!" << endl;
+				system("pause");
+			}
+			cout << string(50, '\n');
+				  goto Menu;
+				  break;
+		//  LOAD MY MASTERLOG FAM ============================================================
+		}
+		case 6:
+		{
+				  ifstream file;
+				  string text;
+				  cin.ignore();
+
+				  //open the input file
+				  file.open("data.txt");
+
+				  //if file is not empty, read line by line
+				  while (getline(file, text))
+				  {
+					  cout << text << endl;
+				  }
+				  file.close();
+				  system("pause");
+				  cout << string(50, '\n');
+				  goto Menu;
+				  break;
+		}
+		//  PEACE OUT FAM ============================================================
+		case 7:
+		{
+				  cout << "Good-bye!" << endl;
+				  break;
+		}
+		default:  cout << "Response not recognized..." << endl;
+			cout << string(50, '\n');
+			goto Menu;
+		}
+	}
+	system("pause");
+	return 0;
+
+}
