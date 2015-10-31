@@ -12,9 +12,13 @@ using namespace std;
 int main()
 {
 	int menu;
+	string stars = "********************";
 
 Menu:
+	cout << stars << stars << endl;
 	cout << "Hello user!  What would you like to do?" << endl;
+	cout << stars << stars << endl;
+	cout << stars << stars << endl;
 	cout << "1...Register" << endl
 		<< "2...Login" << endl
 		<< "3...Create a Monster" << endl
@@ -22,6 +26,7 @@ Menu:
 		<< "5...See player log" << endl
 		<< "6...See masterlog" << endl
 		<< "7...Exit the program" << endl;
+	cout << stars << stars << endl;
 	cin >> menu;
 	{
 		switch (menu)
@@ -37,7 +42,7 @@ Menu:
 				// Register a username
 			Username:
 				{
-					cout << "Please enter your username." << endl;
+					cout << "Please enter your username, without any spaces or special characters." << endl;
 					cout << "Username: ";
 					cin >> username;
 					cout << endl;
@@ -73,7 +78,7 @@ Menu:
 					outputFile.open(username.c_str());  //  Create a file for the new user.
 				}
 			Password:
-				cout << "Password: ";
+				cout << "Password, without any spaces or special characters.: ";
 				cin >> password;
 				if (password.length() < 6)
 				{
