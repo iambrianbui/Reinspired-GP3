@@ -1,17 +1,20 @@
-//  This program allows the user to load a monster.
+//  This program allows the user to load and fight a monster.
 #include <iostream>
 #include <string>
 #include <fstream>        // Needed to use 
 #include<ctime>
 #include<cstdlib>
+#include <stdio.h>
 using namespace std;
 
 int main()
 {
 	//  Initialize
 	ifstream inputFile;
-	ofstream fout;
-	string monster;
+	ofstream fout,
+		fout2;
+	string monster,
+		player;
 	int number;
 
 	//  The fun stuff :^)  // skillz
@@ -26,7 +29,22 @@ int main()
 		skills;
 
 
-	// Get the filename from the user
+	// Pseudologin to track stats
+	PseudoLogin:
+	cout << "Insert username, player." << endl;
+	getline(cin, player);
+	player += "_player.txt";
+	inputFile.open(player);
+	if (!inputFile)
+	{
+		cout << "Player name not recognized!" << endl;
+		goto PseudoLogin;
+	}
+	else
+		inputFile.close();	
+	inputFile.clear();
+
+	// Ask for monster
 	cout << "Welcome to the arena, who would you like to fight?" << endl;
 	getline(cin, monster);
 
@@ -147,26 +165,48 @@ int main()
 
 			Check:
 				{
-					if (monsterHP <= 0)
+					time_t tim;   // get time now
+					time(&tim);
+				
+					//  check if the player has killed the monster
+					if (monsterHP <= 0) 
 					{
 						cout << monster <<" has been slain!" << endl;
 						system("pause");
 						inputFile.close();
 						inputFile.clear();
-						fout.open("admin", ios::app);
-						fout << number + 100 << " XP" << endl;
-						fout << monster << "    Victory" << endl;
-						cout << "You have gained" << number + 100 << "XP!" << endl;
+						//  close the monster file
+						fout.open("data.txt", ios::app);
+						fout << player << "   " << number + 100 << " XP ";
+						fout << monster << "    Victory  " << ctime(&tim);
+						cout << "You have gained " << number + 100 << " XP!" << endl;
+						//  insert the data into the masterlog
+						inputFile.close();
+						inputFile.clear();
+						//  close the masterlog
+
+						fout2.open(player, ios::app);
+						fout2 << number + 100 << " XP ";
+						fout2 << monster << "    Victory  " << ctime(&tim) << endl;
+						//  insert the data into the playerlog
 
 					}
+					//  check if the monster has killed the player
 					else if (playerHP <= 0)
 					{
 						cout << "You have been slain..." << endl;
 						system("pause");
 						inputFile.close();
 						inputFile.clear();
-						fout.open("admin", ios::app);
-						fout << monster << "    Defeat" << endl;
+						//  close the monster file
+						fout.open("data.txt", ios::app);
+						fout << player << "   " << monster << "    Defeat  " << ctime(&tim);
+						inputFile.close();
+						inputFile.clear();
+						//  insert the data into the masterlog, close it
+						fout2.open(player, ios::app);
+						fout2 << monster << "    Defeat  " << ctime(&tim);
+						//  insert the data into the player log
 
 					}
 					else goto Fight;
