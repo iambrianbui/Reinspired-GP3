@@ -9,6 +9,7 @@ int main()
 {
 	ofstream outputFile;
 	string username, password;
+	int admin;
 
 // Register a username
 Username:
@@ -23,6 +24,29 @@ Username:
 			goto Username;
 		}
 		else
+		AdminCheck:
+			cout << "Are you a player, or an administrator?" << endl;
+			cout << "1...I am a player." << endl;
+			cout << "2...I am an administrator" << endl;
+			cin >> admin;
+			switch (admin)
+			{
+			case 1:
+			{
+				username += "_player.txt";
+				break;
+			}
+			case 2:
+			{
+				username += "_admin.txt";
+				break;
+			}
+			default:
+				cout << "Response not recognized." << endl;
+				goto AdminCheck;
+			}
+
+
 		outputFile.open(username.c_str());  //  Create a file for the new user.
 	}
 	Password:
